@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SAMPLE_NUM 3000
+#define SAMPLE_NUM 10000
 #define N 50
 #define A 20
 #define B 85
@@ -51,7 +51,7 @@ int main(){
 					count_1[k]++;
 				}
 			}
-			if(check_rv(rv, 0b0001) && !check_rv(rv, 0b1000)){
+			if(check_rv(rv, 0b0100) && !check_rv(rv, 0b1000)){
 				count_2_1[k]++;
 				if(!check_rv(rv, 0b0010)){
 					count_2[k]++;
@@ -71,13 +71,13 @@ int main(){
 		sum_1 += prob_1[k];
 		sum_2 += prob_2[k];
 		sum_3 += prob_3[k];
-		printf("P(D=1|B=1)=\t%.5lf\n", prob_1[k]);
-		printf("P(C=0|A=0,D=1)=\t%.5lf\n", prob_2[k]);
-		printf("P(D=0|A=1)=\t%.5lf\n", prob_3[k]);
 	}
 	
 	disp = dispersion(prob_1, sum_1/N, N);
-	printf("\n\ndisp=\t\t%lf\n", disp);	
+	printf("分散（標本数50）=\t%.4lf\n", disp);	
+	printf("P(D=1|B=1)=\t\t%.4lf\n", prob_1[0]);
+	printf("P(C=0|A=0,D=1)=\t\t%.4lf\n", prob_2[0]);
+	printf("P(D=0|A=1)=\t\t%.4lf\n", prob_3[0]);
 	return 0;
 }
 
