@@ -1,0 +1,98 @@
+sup06.txt
+s15023 岩崎悠紀
+
+1．課題
+dumpMemory.cを次のようにして動作させ，メモリ の内容について考察しなさい。
+また調べたことも書きなさい。
+
+2．使用したプログラム
+[dumpMemoy.c]
+/**********************************************************
+dumpMemory関数でメモリダンプした後
+msecwait関数で0.25秒ごとのLEDのON-OFFを行う
+**********************************************************/
+#include <3048fone.h>
+#include "h8_3048fone.h"
+
+void msecwait(int msec)
+{
+	int i,j;
+	for (i=0;i<msec;i++) {
+		for (j=0;j<3352;j++);    /*3352は実測によって求めた値 20MHz駆動*/
+	}
+}
+
+void dumpMemory(long int address, long int tail)
+{
+	long int i;
+	unsigned char ch;
+	address&=0xfffffff0;
+	tail&=0xfffffff0;
+	SCI1_printf("address +0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F   0123456789ABCDEF\n");
+	for (; address<tail; address++) {
+		if (address%0x10==0) SCI1_printf ("%05lx : ",address);
+		SCI1_printf("%02x ",*(unsigned char*)address);
+		if (address%0x10==0xf) {
+			SCI1_printf(": ");
+			for (i=-0xf; i<=0; i++) {
+				ch=*(unsigned char*)(address+i);
+				SCI1_printf("%c",isprint(ch)?ch:'.');
+			}
+			SCI1_printf("\n");
+		}
+	}
+	SCI1_printf("\n");
+}
+
+int count1=0x1234;
+int count2;
+
+main()
+{
+    int count3=0x3456;
+     int i;
+     initSCI1(); /*シリアル通信ユニットSCI1の初期化*/
+     initLed();  /*LED初期化*/
+     dumpMemory(0L,0x1140L); /*ROM領域*/
+     dumpMemory(0xfef10L,0xfef30L); /*RAM領域*/
+     count2=0x2345;
+     dumpMemory(0xfef10L,0xfef30L); /*RAM領域*/
+     for (i=0; i<4; i++) {
+         SCI1_printf("%4x %4x %4x\n",count1++,count2++,count3++);
+         turnOnLed(0); /*LED0のON*/
+         turnOffLed(1); /*LED1のOFF*/
+         msecwait(250);
+         turnOffLed(0); /*LED0のOFF*/
+         turnOnLed(1); /*LED1のON*/
+         msecwait(250);
+     }
+     dumpMemory(0xfef10L,0xfef30L); /*RAM領域*/
+     while(1);
+}
+
+[ex4.sub]
+ROM (D,X)
+START P,C,D(140),X,B(0FEF10)
+EXIT
+
+3．実行結果
+変更点のみ記述
+プログラム変更前：
+00100 : 7a 07 00 0f ff 10 01 00 6b 20 00 00 0f 66 01 00 : z.......k ...f..
+00110 : 6b 21 00 00 0f 6a 01 00 6b 22 00 00 0f 6e 01 f0 : k!...j..k"...n..
+00120 : 64 22 5a 00 01 2e 6c 03 68 93 0b 71 1b 72 46 f6 : d"Z...l.h..q.rF.
+00130 : 5e 00 0d c6 40 fe 18 88 38 ba 38 b8 f8 13 38 b9 : ^...@...8.8...8.
+00140 : 19 00 0b 50 79 20 03 e8 4d f8 f8 30 38 ba 54 70 : ...Py ..M..08.Tp
+
+プログラム変更後：
+00100 : ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff : ................
+00110 : ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff : ................
+00120 : ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff : ................
+00130 : ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff : ................
+00140 : 7a 07 00 0f ff 10 01 00 6b 20 00 00 0f a6 01 00 : z.......k ......
+
+4．考察
+　プログラム変更前はコードが00100から始まっていたのに対し，変更後は00140から始まっている．プログラムの内容自体はおそらくあまり変わっていない．
+
+5．まとめ
+　今回の実験では，.subのファイルを変えることによって，プログラムの開始位置を変更したりすることができるということが理解できた．
