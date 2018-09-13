@@ -1,3 +1,1 @@
-#
-# this repository is for assignment
-#
+# this repository is for assignments
