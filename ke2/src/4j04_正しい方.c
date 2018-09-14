@@ -61,7 +61,7 @@ int main(){
 					count_1[k]++;
 				}
 			}
-			if(check_rv(rv, 0b0100) && !check_rv(rv, 0b1000)){
+			if(check_rv(rv, 0b0001) && !check_rv(rv, 0b1000)){
 				count_2_1[k]++;
 				if(!check_rv(rv, 0b0010)){
 					count_2[k]++;
