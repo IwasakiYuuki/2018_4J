@@ -37,7 +37,7 @@ data_chunk *data;
 
 //各ヘッダ情報のテンプレート
 riff_chunk riff_temp = {"RIFF", 0, "WAVE"};
-fmt_chunk fmt_temp = {"fmt", 16, 1, 1, 11025, 22050, 2, 16};
+fmt_chunk fmt_temp = {"fmt\x20", 16, 1, 1, 11025, 22050, 2, 16};
 data_chunk data_temp = {"data", 0, NULL};
 
 void get_header(riff_chunk *riff, fmt_chunk *fmt, FILE *fp);
@@ -146,12 +146,13 @@ void get_from_text(riff_chunk *riff, data_chunk *data, FILE *fp){
 
 void get_data_text(data_chunk *data, FILE *fp){
 	int i = 0, size = 0;
-	char buf[256];
+	short buf;
 	fseek(fp ,0, SEEK_SET);
-	while(fgets(buf, 256, fp) != NULL){
+	while(fscanf(fp, "%hd", &buf) != EOF){
 		size++;
 	}
 	data->data = (void *)malloc(size * sizeof(unsigned short));
+	printf("%d\n",size);
 	data->size = size * sizeof(unsigned short);
 	fseek(fp ,0, SEEK_SET);
 	while(fscanf(fp, "%hd", &data->data[i]) != EOF){
@@ -197,9 +198,10 @@ void output_wave(riff_chunk *riff, fmt_chunk *fmt, data_chunk *data, char *filen
 		outerr();
 		exit(1);
 	}
+	fseek(fp, 0, SEEK_SET);
 	//ヘッダ情報の書き込み
 	fwrite(riff->id, sizeof(char), 4, fp);
-	fwrite(&riff->size, sizeof(unsigned int), 1, fp);
+	fwrite(&riff->size, sizeof(char), 4, fp);
 	fwrite(riff->type, sizeof(char), 4, fp);
 	fwrite(fmt->id, sizeof(char), 4, fp);
 	fwrite(&fmt->size, sizeof(char), 4, fp);
@@ -210,9 +212,9 @@ void output_wave(riff_chunk *riff, fmt_chunk *fmt, data_chunk *data, char *filen
 	fwrite(&fmt->byte_samp, sizeof(char), 2, fp);
 	fwrite(&fmt->bit, sizeof(char), 2, fp);
 	fwrite(data->id, sizeof(char), 4, fp);
-	fwrite(&data->size, sizeof(unsigned int), 4, fp);
+	fwrite(&data->size, sizeof(char), 4, fp);
 	//データの書き込み
-	if(fwrite(data->data, sizeof(unsigned short), data->size/sizeof(unsigned short), fp) != data->size/sizeof(unsigned short)){
+	if(fwrite(data->data, 2, data->size/2, fp) < data->size/sizeof(unsigned short)){
 		outerr();
 		exit(1);
 	}

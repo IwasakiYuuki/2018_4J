@@ -1,4 +1,7 @@
 //package pr2calc;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class SourceExample{  
 
@@ -79,25 +82,69 @@ public class SourceExample{
 		}
 	}
 
-	/* このプログラムを実行すると、以下の main メソッドに記述された動作が実行される */
-	public static void main(String[] args){
+	public SourceExample(String fileName){
+		try{
+			// ファイル"fileName"から、データを読み込むメソッドを呼び出す
+			loadData(fileName);
+		}catch(IOException e){  System.out.println("ファイルからの入力に失敗しました。");}
+	}
+
+	private boolean loadData(String fileName) throws IOException{
+		int h,i;
+		int row, column;
+		BufferedReader fin = new BufferedReader(new FileReader(fileName));
+		String inputData;
+		String[] inputValue;
+
+		// inputData に、ファイルから文字列を一行分読み込む
+		// 得られた文字列データを、スペース(= "\\s") で区切り、配列 inputValue へ格納
+		inputData = fin.readLine();
+		inputValue = inputData.split("\\s", 0);
+
+		if(inputValue.length != 1)
+			return false;
+		else{
+			// フィールド（インスタンス）変数 a に、inputValueの最初（0番目）の要素を代入
+			this.setA(Integer.parseInt(inputValue[0]));
+			// もう一行読み込み、スペース区切りで inputValue へデータ(次に読み込む行列の行数＆列数）を格納
+			inputData = fin.readLine();
+			inputValue = inputData.split("\\s", 0);
+			if(inputValue.length != 2)	// 行数＆列数の双方が格納されていなければ
+				return false;
+			else{
+				// 変数 row に行数のデータ、column に列数のデータを代入
+				row = Integer.parseInt(inputValue[0]);
+				column = Integer.parseInt(inputValue[1]);
+				this.b = new int[row][column];
+				// 配列 b のh行i列目の要素に、読みんだファイルのh行目、(左から）i番目のデータを格納
+				for(i=0; i<row; i++){
+					inputData = fin.readLine();
+					inputValue = inputData.split("\\s", 0);
+					for(h=0; h<column; h++){
+						this.b[i][h] = Integer.parseInt(inputValue[h]);
+					}
+				}
+				// 最後に一行読み込み、スペース区切りで inputValue へデータ(文字列）を格納
+				inputData = fin.readLine();
+				// フィールド（インスタンス）変数 str に、格納した文字列を代入
+				this.setStr(inputData); 
+			}
+		}
+		fin.close(); 
+		return true;
+	}	
+
+	public static void main(String[] args) {
 		SourceExample    ex;    // SourceExample クラスのオブジェクト ex を宣言
-		int value[][] = {{1,2,3},{4,5,6},{7,8,9}}; // "new"を用いない、二次元配列を初期化する書き方
 
-		//ex = new SourceExample();    // SourceExample クラスのオブジェクト ex を生成
-		//ex.setA(10);    // ex オブジェクトのフィールド this.a の値を10に変更；
-		ex = new SourceExample();
-		ex.setA(3);
-		ex.setB(value);
-		ex.setStr("Hello World.");
-
-		// 上の二行をコメントアウトした上で、aを3、bを配列 value、strを文字列"Hello World."として
-		// 初期化するコンストラクタを用いて ex を生成せよ
+		// 入力データの含まれているファイル名をsample.datとした場合
+		ex = new SourceExample(args[0]);
 
 		System.out.println("オブジェクトのaフィールドの値は"+ex.getA()+"です");
+		System.out.println("");
 		ex.showAllContentsOfB();
+		System.out.println("");
 		System.out.println(ex.getStr());
 
 	}
-
 }
