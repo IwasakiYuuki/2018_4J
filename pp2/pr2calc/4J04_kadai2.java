@@ -36,11 +36,7 @@ public class SourceExample{
 
 
 	// フィールド変数a, b, strの値を内部で初期化（設定）するコンストラクタをもう一つ記述する
-	public SourceExample(int a, int[][] b, String str){
-		this.setA(a);
-		this.setB(b);
-		this.setStr(str);
-	}
+
 
 
 	/* 以降、mainメソッド以外のメソッドは、コンストラクタで生成されたオブジェクト
@@ -140,16 +136,14 @@ public class SourceExample{
 
 	public static void main(String[] args) {
 		SourceExample    ex;    // SourceExample クラスのオブジェクト ex を宣言
-		int value[][] = {{1,2,3},{4,5,6},{7,8,9}}; // "new"を用いない、二次元配列を初期化する書き方
 
-		//ex = new SourceExample();    // SourceExample クラスのオブジェクト ex を生成
-		//ex.setA(10); // ex オブジェクトのフィールド this.a の値を10に変更；
-		// 上の二行をコメントアウトした上で、aを3、bを配列 value、str を文字列 "Hello World." として
-		// 初期化するコンストラクタを用いて ex を生成せよ
-		ex = new SourceExample(3, value, "Hello World.");
+		// 入力データの含まれているファイル名をsample.datとした場合
+		ex = new SourceExample(args[0]);
 
 		System.out.println("オブジェクトのaフィールドの値は"+ex.getA()+"です");
+		System.out.println("");
 		ex.showAllContentsOfB();
+		System.out.println("");
 		System.out.println(ex.getStr());
 
 	}

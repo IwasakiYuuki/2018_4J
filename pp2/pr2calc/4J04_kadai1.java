@@ -93,50 +93,6 @@ public class SourceExample{
 		}catch(IOException e){  System.out.println("ファイルからの入力に失敗しました。");}
 	}
 
-	private boolean loadData(String fileName) throws IOException{
-		int h,i;
-		int row, column;
-		BufferedReader fin = new BufferedReader(new FileReader(fileName));
-		String inputData;
-		String[] inputValue;
-
-		// inputData に、ファイルから文字列を一行分読み込む
-		// 得られた文字列データを、スペース(= "\\s") で区切り、配列 inputValue へ格納
-		inputData = fin.readLine();
-		inputValue = inputData.split("\\s", 0);
-
-		if(inputValue.length != 1)
-			return false;
-		else{
-			// フィールド（インスタンス）変数 a に、inputValueの最初（0番目）の要素を代入
-			this.setA(Integer.parseInt(inputValue[0]));
-			// もう一行読み込み、スペース区切りで inputValue へデータ(次に読み込む行列の行数＆列数）を格納
-			inputData = fin.readLine();
-			inputValue = inputData.split("\\s", 0);
-			if(inputValue.length != 2)	// 行数＆列数の双方が格納されていなければ
-				return false;
-			else{
-				// 変数 row に行数のデータ、column に列数のデータを代入
-				row = Integer.parseInt(inputValue[0]);
-				column = Integer.parseInt(inputValue[1]);
-				this.b = new int[row][column];
-				// 配列 b のh行i列目の要素に、読みんだファイルのh行目、(左から）i番目のデータを格納
-				for(i=0; i<row; i++){
-					inputData = fin.readLine();
-					inputValue = inputData.split("\\s", 0);
-					for(h=0; h<column; h++){
-						this.b[i][h] = Integer.parseInt(inputValue[h]);
-					}
-				}
-				// 最後に一行読み込み、スペース区切りで inputValue へデータ(文字列）を格納
-				inputData = fin.readLine();
-				// フィールド（インスタンス）変数 str に、格納した文字列を代入
-				this.setStr(inputData); 
-			}
-		}
-		fin.close(); 
-		return true;
-	}	
 
 	public static void main(String[] args) {
 		SourceExample    ex;    // SourceExample クラスのオブジェクト ex を宣言
