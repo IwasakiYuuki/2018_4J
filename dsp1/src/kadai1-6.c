@@ -1,3 +1,4 @@
+//2018年度・課題1-6・出席番号４
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -61,6 +62,8 @@ int main(){
 	fmt = (fmt_chunk *)malloc(sizeof(fmt_chunk));
 	data = (data_chunk *)malloc(sizeof(data_chunk));
 
+	puts("課題番号１−６");
+	puts("出席番号４番，岩崎悠紀");
 	puts("[usage]");
 	puts("1: WAVE -> TEXT");
 	puts("2: TEXT -> WAVE");
@@ -81,7 +84,6 @@ int main(){
 			exit(1);
 		}
 		get_data_wave(data, infp);
-		printf("%d\n", data->size);
 		output_text(data, output_filename);
 		break;
 
@@ -96,7 +98,7 @@ int main(){
 		break;
 	}
 
-	test_print(&riff_temp, &fmt_temp, &data_temp);
+//	test_print(&riff_temp, &fmt_temp, &data_temp);
 
 	fclose(infp);
 	return 0;
