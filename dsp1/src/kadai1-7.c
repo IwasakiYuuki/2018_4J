@@ -1,10 +1,11 @@
 //2018年度・課題５・出席番号４番
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
-#define NUM 11025
+#define NUM 8
 #define EPSILON 1e-5
 
 typedef struct{
@@ -18,19 +19,71 @@ comp comp_add(comp a, comp b);
 comp comp_sub(comp a, comp b);
 comp comp_mul(comp a, comp b);
 comp comp_div(comp a, comp b);
-comp conj(comp a);
-void twid(comp *wnkm int N);
+comp con_reverse(comp a);
+void twid(comp *wnkm, int N);
+unsigned int bit_reverse(unsigned int a, int n);
+void butterflyOpe(comp *x1, comp *x2, comp w);
+void fft(comp *in, comp *wnk, int N, int r);
 void dft(comp *xn, int N, comp *Xk, int a, int b);
 void ampSpectrum(comp *Xk, int N, double *spec);
 void phaSpectrum(comp *Xk, int N, double *spec);
 void hamming(comp *x1, comp *x2, int N);
+
 
 comp xn[NUM];
 comp Xk[NUM];
 char *filename = "waon.txt";
 
 int main(){
-	
+    int i;
+    comp a[8], A[8], test[4];
+    a[0].re =1;
+    a[0].im =0;
+    a[1].re =2;
+    a[1].im =0;
+    a[2].re =3;
+    a[2].im =0;
+    a[3].re =4;
+    a[3].im =0;
+    a[4].re =5;
+    a[4].im =0;
+    a[5].re =6;
+    a[5].im =0;
+    a[6].re =7;
+    a[6].im =0;
+    a[7].re =8;
+    a[7].im =0;
+    for(i=0; i<8; i++){
+        A[i].re = 0;
+        A[i].im = 0;
+    }
+
+    dft(a, 8, A, 1, 1);
+    puts("");
+    a[0].re =1;
+    a[0].im =0;
+    a[1].re =2;
+    a[1].im =0;
+    a[2].re =3;
+    a[2].im =0;
+    a[3].re =4;
+    a[3].im =0;
+    a[4].re =5;
+    a[4].im =0;
+    a[5].re =6;
+    a[5].im =0;
+    a[6].re =7;
+    a[6].im =0;
+    a[7].re =8;
+    a[7].im =0;
+    twid(test, 8);
+    fft(a, test, 8, 3);
+    for(i=0; i<8; i++){
+        printf("re[%d] = %lf,  %lf\n", i, a[i].re, A[i].re);
+        printf("im[%d] = %lf,  %lf\n", i, a[i].im, A[i].im);
+    }
+
+	/*
 	int i = 0;
 	int N = NUM;
 	double buf[NUM]={0}, pha_buf[NUM]={0};
@@ -87,6 +140,7 @@ int main(){
 	printf("2018年度・課題５・出席番号４番\n");
 	printf("usage:内部の定数を変化させ実行するとDFTします。\n");
 	printf("ファイルに結果を出力しました\n");
+	*/
 
 	return 0;
 }
@@ -163,7 +217,7 @@ comp comp_mul(comp a, comp b){
 }
 
 comp comp_div(comp a, comp b){
-	comp b_inv = conj(b);
+	comp b_inv = con_reverse(b);
 	comp buf = comp_mul(a, b_inv);
 	comp ans;
 	ans.re = buf.re / (b.re*b.re + b.im*b.im);
@@ -171,15 +225,70 @@ comp comp_div(comp a, comp b){
 	return ans;
 }
 
-comp conj(comp a){
+comp con_reverse(comp a){
 	comp ans;
 	ans.re = a.re;
 	ans.im = -a.im;
 	return ans;
 }
 
-void twid(comp *wnkm int N){
-	
+void twid(comp *wnkm, int N){
+	for(int i=0; i<N/2; i++){
+	    wnkm[i].re = cos(2*M_PI*-1.0*((double)i/(double)N));
+	    wnkm[i].im = sin(2*M_PI*-1.0*((double)i/(double)N));
+	    if(wnkm[i].re == 0){
+	        wnkm[i].re = 0;
+	    }
+	    if(wnkm[i].im == 0){
+	        wnkm[i].im = 0;
+	    }
+	}
+}
+
+void butterflyOpe(comp *x1, comp *x2, comp w){
+    comp buf1, buf2;
+    buf1 = comp_add(*x1, comp_mul(*x2, w));
+    buf2 = comp_sub(*x1, comp_mul(*x2, w));
+    *x1 = buf1;
+    *x2 = buf2;
+}
+
+unsigned int bit_reverse(unsigned int a, int n){
+    int buf[n], ans=0, i;
+    for(i=0; i<n; i++){
+        if(((a>>i) & 1) == 1){
+            buf[i]=1;
+        }else{
+            buf[i]=0;
+        }
+    }
+    for(i=0; i<n; i++){
+        ans = ans << 1;
+        ans += buf[i];
+    }
+    return ans;
+}
+
+void fft(comp *in, comp *wnk, int N, int r){
+    int i, j, k, current, nk, num=1;
+    comp buf1, buf2, cache[N];
+
+    for(i=0; i<r; i++){
+        current = i+1;
+        for(j=0; j<N; j+=num*2){
+            for(k=0; k<num; k++){
+                nk = N/(num*2)*k;
+                butterflyOpe(&in[bit_reverse(j+k, r)], &in[bit_reverse(j+k+num, r)], wnk[nk]);
+            }
+        }
+        num *= 2;
+    }
+    for(i=0; i<N; i++){
+        cache[i] = in[bit_reverse(i, r)];
+    }
+    for(i=0; i<N; i++){
+        in[i] = cache[i];
+    }
 }
 
 void dft(comp *xn, int N, comp *Xk, int a, int b){
