@@ -28,8 +28,7 @@ class CharDatas(object):
 
 
 if __name__ == '__main__':
-    paths = ['c'+'{:02}'.format(i)+'.txt' for i in range(1, 47)]
-    paths = map(lambda x: '../char/'+x, paths)
-    print(os.path.abspath(os.path.curdir))
+    paths = list(map(lambda x: '../char/'+x, ['c'+'{:02}'.format(i)+'.txt' for i in range(1, 47)]))
+    print(paths)
     char = CharDatas(paths)
     char.get_mean()
