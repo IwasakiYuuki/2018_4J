@@ -51,6 +51,48 @@ public class SimultaneousEquation extends Matrix {
 		}
 	}
 
+	public void subtractRowFromPivot(int pivot, int n, int row){
+	    int num = this.m[row].length, i;
+	    double rate = this.m[row][n]/this.m[pivot][n];
+	    for(i=0; i<num; i++){
+	        this.m[row][i] -= (this.m[pivot][i]*rate);
+	    }
+	}
+
+	public void solveByGauss(){
+	    int i, j, cnt=1, num, current;
+	    double buf;
+	    num = this.m.length;
+        for(i=0; i<num; i++){
+            this.display();
+            System.out.println("");
+            for(j=cnt; j<num; j++){
+                this.subtractRowFromPivot(i, i, j);
+            }
+            cnt++;
+        }
+        cnt=0;
+        for(i=0; i<num; i++){
+            buf = 0;
+            for(j=0; j<cnt; j++){
+                current = num-j-1;
+                buf += this.m[num-i-1][current]*this.answers[current];
+            }
+            current = num-i-1;
+            this.answers[current] = (this.m[current][this.m[0].length-1] - buf)/this.m[current][current];
+            cnt++;
+        }
+		System.out.println("Answer:");
+		for(i=0; i<this.m.length; i++){
+			System.out.printf("x%d = %.2f", i+1, this.answers[i]);
+			if(i!=(this.m.length-1)){
+				System.out.print(", ");
+			}else{
+				System.out.print(".\n");
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		double[][] test1 = {{2.0, 1.0, 3.0, 4.0, 2.0},
 				{3.0, 2.0, 5.0, 2.0, 12.0},
@@ -58,7 +100,7 @@ public class SimultaneousEquation extends Matrix {
 				{-1.0, -3.0, 1.0, 3.0, -1.0}};
 
 		SimultaneousEquation t1 = new SimultaneousEquation(test1);
-		t1.solveByGaussJordan();
+		t1.solveByGauss();
 	}
 }
 
@@ -68,30 +110,21 @@ public class SimultaneousEquation extends Matrix {
  [ 3.00 4.00 1.00 -1.00 4.00 ]
  [ -1.00 -3.00 1.00 3.00 -1.00 ]
 
- 1行1列目が１となるように割り，他の行の1列目が０となるように引く
- [ 1.00 0.50 1.50 2.00 1.00 ]
+ [ 2.00 1.00 3.00 4.00 2.00 ]
  [ 0.00 0.50 0.50 -4.00 9.00 ]
  [ 0.00 2.50 -3.50 -7.00 1.00 ]
  [ 0.00 -2.50 2.50 5.00 0.00 ]
 
- 2行2列目が１となるように割り，他の行の2列目が０となるように引く
- [ 1.00 0.00 1.00 6.00 -8.00 ]
- [ 0.00 1.00 1.00 -8.00 18.00 ]
+ [ 2.00 1.00 3.00 4.00 2.00 ]
+ [ 0.00 0.50 0.50 -4.00 9.00 ]
  [ 0.00 0.00 -6.00 13.00 -44.00 ]
  [ 0.00 0.00 5.00 -15.00 45.00 ]
 
- 3行3列目が１となるように割り，他の行の3列目が０となるように引く
- [ 1.00 0.00 0.00 8.17 -15.33 ]
- [ 0.00 1.00 0.00 -5.83 10.67 ]
- [ -0.00 -0.00 1.00 -2.17 7.33 ]
+ [ 2.00 1.00 3.00 4.00 2.00 ]
+ [ 0.00 0.50 0.50 -4.00 9.00 ]
+ [ 0.00 0.00 -6.00 13.00 -44.00 ]
  [ 0.00 0.00 0.00 -4.17 8.33 ]
 
- 4行4列目が１となるように割り，他の行の4列目が０となるように引く
- [ 1.00 0.00 0.00 0.00 1.00 ]
- [ 0.00 1.00 0.00 0.00 -1.00 ]
- [ -0.00 -0.00 1.00 0.00 3.00 ]
- [ -0.00 -0.00 -0.00 1.00 -2.00 ]
-
-Answer:
-x1 = 1.00, x2 = -1.00, x3 = 3.00, x4 = -2.00.
+ Answer:
+ x1 = 1.00, x2 = -1.00, x3 = 3.00, x4 = -2.00.
  */

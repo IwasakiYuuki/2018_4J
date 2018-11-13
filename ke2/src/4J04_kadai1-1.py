@@ -27,7 +27,7 @@ def write_mean(means):
     for (i, mean) in enumerate(means):
         with open(paths[i], 'w') as f:
             for line in mean:
-                f.write(str(line)+'\n')
+                f.write(str(line)+'_n')
                 print(i)
 
 
