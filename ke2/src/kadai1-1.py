@@ -28,7 +28,6 @@ def write_mean(means):
         with open(paths[i], 'w') as f:
             for line in mean:
                 f.write(str(line)+'\n')
-                print(i)
 
 
 class CharDatas(object):
