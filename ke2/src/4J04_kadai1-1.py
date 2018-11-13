@@ -1,5 +1,6 @@
 #kadai1-1 s15023 ä‚çËóIãI
 import os, sys
+import matplotlib
 
 FEATURE = 196
 CHARACTER = 180
@@ -28,14 +29,18 @@ def write_mean(means):
     for (i, mean) in enumerate(means):
         with open(paths[i], 'w') as f:
             for line in mean:
-                f.write(str(line)+'Å_n')
-                print(i)
+                f.write(str(line)+'?_n')
+
+
+def multi_list(l1, l2):
+    return [x*y for (x, y) in zip(l1, l2)]
 
 
 class CharDatas(object):
     def __init__(self, datas):
         self.paths = paths
         self.datas = datas
+        self.means = self.get_mean()
 
     def get_mean(self):
         bufs = []
@@ -48,10 +53,29 @@ class CharDatas(object):
             bufs.append(buf)
         return bufs
 
+    def get_covariance(self):
+        answers = []
+        for num, data in enumerate(self.datas):
+            rev_data = list(zip(*data))
+            answer = []
+            mean = means[num]
+            for i in range(FEATURE):
+                buf = [((sum(multi_list(rev_data[i], rev_data[j]))/CHARACTER) - mean[i]*mean[j]) for j in range(FEATURE)]
+#                for j in range(FEATURE):
+#                    buf.append((sum(multi_list(rev_data[i], rev_data[j]))/CHARACTER) - mean[i]*mean[j])
+                answer.append(buf)
+            answers.append(answer)
+            print(num)
+        return answers
+
+
 
 if __name__ == '__main__':
     paths = list(map(lambda x: '../char/'+x, ['c'+'{:02}'.format(i)+'.txt' for i in range(1, FILES)]))
-    print(paths)
     char = CharDatas(multi_load(paths))
     means = char.get_mean()
-    write_mean(means)
+    covs = char.get_covariance()
+    for i, cov in enumerate(covs):
+        print('--------------'+str(i)+'---------------\n')
+        for column in cov:
+            print(column)
