@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#define NUM 8
+#define NUM 16384
 #define EPSILON 1e-5
 
 typedef struct{
@@ -24,6 +24,7 @@ void twid(comp *wnkm, int N);
 unsigned int bit_reverse(unsigned int a, int n);
 void butterflyOpe(comp *x1, comp *x2, comp w);
 void fft(comp *in, comp *wnk, int N, int r);
+void ifft(comp *in, comp *wnk, int N, int r);
 void dft(comp *xn, int N, comp *Xk, int a, int b);
 void ampSpectrum(comp *Xk, int N, double *spec);
 void phaSpectrum(comp *Xk, int N, double *spec);
@@ -32,62 +33,13 @@ void hamming(comp *x1, comp *x2, int N);
 
 comp xn[NUM];
 comp Xk[NUM];
-char *filename = "waon.txt";
+char *filename = "./txt/test_data_2-14.txt";
 
 int main(){
-    int i;
-    comp a[8], A[8], test[4];
-    a[0].re =1;
-    a[0].im =0;
-    a[1].re =2;
-    a[1].im =0;
-    a[2].re =3;
-    a[2].im =0;
-    a[3].re =4;
-    a[3].im =0;
-    a[4].re =5;
-    a[4].im =0;
-    a[5].re =6;
-    a[5].im =0;
-    a[6].re =7;
-    a[6].im =0;
-    a[7].re =8;
-    a[7].im =0;
-    for(i=0; i<8; i++){
-        A[i].re = 0;
-        A[i].im = 0;
-    }
-
-    dft(a, 8, A, 1, 1);
-    puts("");
-    a[0].re =1;
-    a[0].im =0;
-    a[1].re =2;
-    a[1].im =0;
-    a[2].re =3;
-    a[2].im =0;
-    a[3].re =4;
-    a[3].im =0;
-    a[4].re =5;
-    a[4].im =0;
-    a[5].re =6;
-    a[5].im =0;
-    a[6].re =7;
-    a[6].im =0;
-    a[7].re =8;
-    a[7].im =0;
-    twid(test, 8);
-    fft(a, test, 8, 3);
-    for(i=0; i<8; i++){
-        printf("re[%d] = %lf,  %lf\n", i, a[i].re, A[i].re);
-        printf("im[%d] = %lf,  %lf\n", i, a[i].im, A[i].im);
-    }
-
-	/*
 	int i = 0;
 	int N = NUM;
 	double buf[NUM]={0}, pha_buf[NUM]={0};
-	comp a[NUM], chache[NUM];
+	comp wnk[NUM];
 	FILE *fp;
 
 	for(i=0;i<N;i++){
@@ -95,52 +47,21 @@ int main(){
 		Xk[i].im = 0;
 		xn[i].re = 0;
 		xn[i].im = 0;
-		a[i].re = 0;
-		a[i].im = 0;
-		chache[i].re = 0;
-		chache[i].im = 0;
 	}
 
-	inputData(chache, filename, N);	
-	printf("2\n");
-	hamming(chache, xn, N);
-	printf("3\n");
-
+	inputData(xn, filename, N);
 	dft(xn, N, Xk, 1, 1);
-	printf("4\n");
-	ampSpectrum(Xk, N, buf);
-	printf("5\n");
-	phaSpectrum(Xk, N, pha_buf);
-	printf("6\n");
-	dft(Xk, N, a, -1, N);
-	printf("7\n");
+	printf("ended dft.\n");
+	twid(wnk, N);
+	fft(xn, wnk, N, 14);
 
-	outputData(xn, "xn", N);
-	outputData(a, "a", N);
 	outputData(Xk, "Xk", N);
-	outputData(chache, "chache", N);
-	
-	fp = fopen("amp.txt", "w");
-	for(i = 0; i < N; i++){
-		if(fprintf(fp, "%lf\n", buf[i]) < 0 ){
-			printf("ERROR\n");
-			return 0;
-		}
-	}
-
-	fp = fopen("pha.txt", "w");
-
-	for(i = 0; i < N; i++){
-		if(fprintf(fp, "%lf\n", pha_buf[i]) < 0 ){
-			printf("ERROR\n");
-			return 0;
-		}
-	}
+	outputData(xn, "xn", N);
 
 	printf("2018年度・課題５・出席番号４番\n");
 	printf("usage:内部の定数を変化させ実行するとDFTします。\n");
 	printf("ファイルに結果を出力しました\n");
-	*/
+
 
 	return 0;
 }
@@ -288,6 +209,18 @@ void fft(comp *in, comp *wnk, int N, int r){
     }
     for(i=0; i<N; i++){
         in[i] = cache[i];
+    }
+}
+
+void ifft(comp *in, comp *wnk, int N, int r){
+    int i;
+    for(i=0; i<N/2; i++){
+        wnk[i] = con_reverse(wnk[i]);
+    }
+    fft(in, wnk, N, r);
+    for(i=0; i<N; i++){
+        in[i].re /= N;
+        in[i].im /= N;
     }
 }
 
