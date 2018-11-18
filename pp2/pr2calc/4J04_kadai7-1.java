@@ -1,4 +1,4 @@
-//4J04å²©å´æ‚ ç´€ã€€èª²é¡Œç•ªå·ï¼–
+//4J04Šâè—I‹I@‰Û‘è”Ô†‚U
 package pr2calc;
 
 public class SimultaneousEquation extends Matrix {
@@ -35,7 +35,7 @@ public class SimultaneousEquation extends Matrix {
 				if(j==i)continue;
 				this.subtractRowFrom(i, j);
 			}
-			System.out.println((i+1)+"è¡Œ"+(i+1)+"åˆ—ç›®ãŒï¼‘ã¨ãªã‚‹ã‚ˆã†ã«å‰²ã‚Šï¼Œä»–ã®è¡Œã®"+(i+1)+"åˆ—ç›®ãŒï¼ã¨ãªã‚‹ã‚ˆã†ã«å¼•ã");
+			System.out.println((i+1)+"s"+(i+1)+"—ñ–Ú‚ª‚P‚Æ‚È‚é‚æ‚¤‚ÉŠ„‚èC‘¼‚Ìs‚Ì"+(i+1)+"—ñ–Ú‚ª‚O‚Æ‚È‚é‚æ‚¤‚Éˆø‚­");
 			this.display();
 			System.out.println("");
 		}
@@ -132,7 +132,7 @@ public class SimultaneousEquation extends Matrix {
 	}
 }
 
-/* å®Ÿè¡Œçµæœ
+/* ÀsŒ‹‰Ê
  [ 2.00 1.00 3.00 4.00 2.00 ]
  [ 3.00 2.00 5.00 2.00 12.00 ]
  [ 3.00 4.00 1.00 -1.00 4.00 ]
