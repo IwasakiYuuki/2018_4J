@@ -93,6 +93,34 @@ public class SimultaneousEquation extends Matrix {
 		}
 	}
 
+	public void solveByGaussWithPartialSelection(){
+	    int i, row = 0;
+	    double max = 0, current;
+        for(i=0; i<m.length; i++){
+            current = Math.abs(m[i][0]);
+            if(max < current){
+                row = i;
+                max = current;
+            }
+        }
+        this.display();
+        System.out.println("");
+        this.exchangeRows(0, row);
+        this.solveByGauss();
+	}
+
+	protected void exchangeRows(int row1, int row2){
+	    int len = m[0].length, i;
+	    double[] buf = new double[len];
+	    for(i=0; i<len; i++){
+	        buf[i] = m[row1][i];
+	        m[row1][i] = m[row2][i];
+	    }
+	    for(i=0; i<len; i++){
+	        m[row2][i] = buf[i];
+	    }
+	}
+
 	public static void main(String[] args) {
 		double[][] test1 = {{2.0, 1.0, 3.0, 4.0, 2.0},
 				{3.0, 2.0, 5.0, 2.0, 12.0},
@@ -100,7 +128,7 @@ public class SimultaneousEquation extends Matrix {
 				{-1.0, -3.0, 1.0, 3.0, -1.0}};
 
 		SimultaneousEquation t1 = new SimultaneousEquation(test1);
-		t1.solveByGauss();
+		t1.solveByGaussWithPartialSelection();
 	}
 }
 
@@ -110,18 +138,23 @@ public class SimultaneousEquation extends Matrix {
  [ 3.00 4.00 1.00 -1.00 4.00 ]
  [ -1.00 -3.00 1.00 3.00 -1.00 ]
 
+ [ 3.00 2.00 5.00 2.00 12.00 ]
  [ 2.00 1.00 3.00 4.00 2.00 ]
- [ 0.00 0.50 0.50 -4.00 9.00 ]
- [ 0.00 2.50 -3.50 -7.00 1.00 ]
- [ 0.00 -2.50 2.50 5.00 0.00 ]
+ [ 3.00 4.00 1.00 -1.00 4.00 ]
+ [ -1.00 -3.00 1.00 3.00 -1.00 ]
 
- [ 2.00 1.00 3.00 4.00 2.00 ]
- [ 0.00 0.50 0.50 -4.00 9.00 ]
+ [ 3.00 2.00 5.00 2.00 12.00 ]
+ [ 0.00 -0.33 -0.33 2.67 -6.00 ]
+ [ 0.00 2.00 -4.00 -3.00 -8.00 ]
+ [ 0.00 -2.33 2.67 3.67 3.00 ]
+
+ [ 3.00 2.00 5.00 2.00 12.00 ]
+ [ 0.00 -0.33 -0.33 2.67 -6.00 ]
  [ 0.00 0.00 -6.00 13.00 -44.00 ]
  [ 0.00 0.00 5.00 -15.00 45.00 ]
 
- [ 2.00 1.00 3.00 4.00 2.00 ]
- [ 0.00 0.50 0.50 -4.00 9.00 ]
+ [ 3.00 2.00 5.00 2.00 12.00 ]
+ [ 0.00 -0.33 -0.33 2.67 -6.00 ]
  [ 0.00 0.00 -6.00 13.00 -44.00 ]
  [ 0.00 0.00 0.00 -4.17 8.33 ]
 

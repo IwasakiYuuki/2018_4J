@@ -4,9 +4,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #define NUM 16384
-#define EPSILON 1e-5
+#define EPSILON 1e-4
 
 typedef struct{
 	double re;
@@ -15,6 +16,7 @@ typedef struct{
 
 void inputData(comp *data, char *filename, int N);
 void outputData(comp *data, char *filename, int N);
+void outputAsAmp(comp *data, char *filename, int N);
 comp comp_add(comp a, comp b);
 comp comp_sub(comp a, comp b);
 comp comp_mul(comp a, comp b);
@@ -39,8 +41,9 @@ int main(){
 	int i = 0;
 	int N = NUM;
 	double buf[NUM]={0}, pha_buf[NUM]={0};
-	comp wnk[NUM];
+	comp wnk[NUM], cache[NUM];
 	FILE *fp;
+    clock_t start, end;
 
 	for(i=0;i<N;i++){
 		Xk[i].re = 0;
@@ -50,13 +53,17 @@ int main(){
 	}
 
 	inputData(xn, filename, N);
+    start = clock();
 	dft(xn, N, Xk, 1, 1);
-	printf("ended dft.\n");
+    end = clock();
+	printf("dft time = %lf\n", (double)(end - start)/CLOCKS_PER_SEC);
+	outputAsAmp(Xk, "Xk.txt", N);
+    start = clock();
 	twid(wnk, N);
-	fft(xn, wnk, N, 14);
-
-	outputData(Xk, "Xk", N);
-	outputData(xn, "xn", N);
+	fft(xn, wnk, N, 7);
+    end = clock();
+	printf("fft time = %lf\n", (double)(end - start)/CLOCKS_PER_SEC);
+	outputAsAmp(xn, "xn.txt", N);
 
 	printf("2018年度・課題５・出席番号４番\n");
 	printf("usage:内部の定数を変化させ実行するとDFTします。\n");
@@ -78,7 +85,6 @@ void inputData(comp *data, char *filename, int N){
 			return;
 		}
 	}
-	printf("1\n");
 }
 
 void outputData(comp *data, char *filename, int N){
@@ -114,6 +120,25 @@ void outputData(comp *data, char *filename, int N){
 
 	fclose(fp_re);
 	fclose(fp_im);
+}
+
+void outputAsAmp(comp *data, char *filename, int N){
+    double amp[N];
+    int i;
+    FILE *out;
+    out = fopen(filename, "w");
+    if(out == NULL){
+        fprintf(stderr, "[ERROR]: cannot open file named [%s].\n", filename);
+        exit(1);
+    }
+    ampSpectrum(data, N, amp);
+    for(i=0; i<N; i++){
+        if(fprintf(out, "%lf\n", amp[i]) < 0 ){
+			fprintf(stderr, "[ERROR]: cannot write file named [%s].\n", filename);
+			exit(1);
+		}
+    }
+    fclose(out);
 }
 
 comp comp_add(comp a, comp b){
@@ -240,10 +265,10 @@ void ampSpectrum(comp *Xk, int N, double *spec){
 
 	for(k=0;k<N;k++){
 		spec[k] = sqrt(Xk[k].re*Xk[k].re + Xk[k].im*Xk[k].im);
-		if(spec[k] < EPSILON){
+		if(spec[k] <= EPSILON){
 			spec[k] = 0;
 		}else{
-			//spec[k] = 20 * log10(spec[k]);
+			spec[k] = 20 * log10(spec[k]);
 		}
 	}
 }
