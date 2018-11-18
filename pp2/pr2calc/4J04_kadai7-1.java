@@ -1,4 +1,4 @@
-//4J04Šâè—I‹I@‰Û‘è”Ô†‚U
+//4J04Šâè—I‹I@‰Û‘è”Ô†‚V
 package pr2calc;
 
 public class SimultaneousEquation extends Matrix {
