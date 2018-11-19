@@ -1,4 +1,4 @@
-# kadai1-2 s15023 å²©å´æ‚ ç´€
+# kadai1-2 s15023 Šâè—I‹I
 import os, sys
 
 FEATURE = 196
