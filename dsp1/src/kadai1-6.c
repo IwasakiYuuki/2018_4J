@@ -28,7 +28,7 @@ typedef struct{
 typedef struct{
 	char id[4];
 	unsigned int size;
-	unsigned short *data;
+	short *data;
 }data_chunk;
 
 //各ヘッダ情報
@@ -153,6 +153,7 @@ void get_data_text(data_chunk *data, FILE *fp){
 	while(fscanf(fp, "%hd", &buf) != EOF){
 		size++;
 	}
+	printf("size = %d\n", size);
 	data->data = (void *)malloc(size * sizeof(unsigned short));
 	printf("%d\n",size);
 	data->size = size * sizeof(unsigned short);

@@ -1,5 +1,9 @@
 # kadai1-2 s15023 岩崎悠紀
 import os, sys
+import math
+import numpy as np
+import time
+from numba import jit
 
 FEATURE = 196
 CHARACTER = 180
@@ -41,15 +45,32 @@ def write_covariance(covs):
                 f.write('\n')
 
 
+def load_convariance(paths):
+    paths = list(map(lambda x: '../sigma/' + x, ['sigma' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
+    ans = []
+    for (i, path) in enumerate(paths):
+        with open(path, 'r') as f:
+            buf = []
+            for f_line in f:
+                buf.append(list(map(lambda x: float(x), f_line.strip().split(',')[:-1])))
+            ans.append(buf)
+    return ans
+
+
 def multi_list(l1, l2):
     return [x * y for (x, y) in zip(l1, l2)]
 
 
 class CharDatas(object):
-    def __init__(self, datas):
-        self.paths = paths
+    def __init__(self, datas, covs):
         self.datas = datas
         self.means = self.get_mean()
+        self.covs = np.array(covs)
+        self.jacobi = self.covs
+        self.eigs = []
+        self.vec = np.array([])
+        self.e = np.eye(FEATURE)
+        self.test_jacobi()
 
     def get_mean(self):
         bufs = []
@@ -75,9 +96,81 @@ class CharDatas(object):
             answers.append(answer)
         return answers
 
+    def test_jacobi(self):
+        start = time.time()
+        for i in range(80000):
+            row, col = self.__numpy_find_max_cov(0)
+            self.__numpy_sub_jacobi(0, row, col)
+        self.eigs.append(np.diag(self.jacobi[0]))
+        self.eigs = np.array(self.eigs)
+        end = time.time()
+        print('numpy time =', end-start)
+        x, y = self.__numpy_find_max_cov(0)
+        print(self.jacobi[0][x][y])
+
+    def __numpy_sub_jacobi(self, num, i, j):
+        cov = self.jacobi[num]
+        under = cov[j][j]-cov[i][i]
+        if under == 0:
+            under = 0.01
+        theta = 0.5 * math.atan(((2*cov[i][j])/under))
+        func_sin = np.frompyfunc(lambda x: math.sin(theta)*x, 1, 1)
+        func_cos = np.frompyfunc(lambda x: math.cos(theta)*x, 1, 1)
+        func_msin = np.frompyfunc(lambda x: -math.sin(theta)*x, 1, 1)
+        if self.vec.size == 0:
+            self.vec = np.eye(FEATURE)
+            self.vec[i][i] = math.cos(theta)
+            self.vec[i][j] = math.sin(theta)
+            self.vec[j][i] = -math.sin(theta)
+            self.vec[j][j] = math.cos(theta)
+        else:
+            v = self.vec.T
+            v_i = v[i]
+            v_j = v[j]
+            v_ans_i = func_cos(v_i)+func_msin(v_j)
+            v_ans_j = func_sin(v_i)+func_cos(v_j)
+            v[i] = v_ans_i
+            v[j] = v_ans_j
+            self.vec = v.T
+        line_i = cov[i]
+        line_j = cov[j]
+        line_ans_i = func_cos(line_i)+func_msin(line_j)
+        line_ans_j = func_sin(line_i)+func_cos(line_j)
+        cov[i] = line_ans_i
+        cov[j] = line_ans_j
+        cov = cov.T
+        line_i = cov[i]
+        line_j = cov[j]
+        line_ans_i = func_cos(line_i)+func_msin(line_j)
+        line_ans_j = func_sin(line_i)+func_cos(line_j)
+        cov[i] = line_ans_i
+        cov[j] = line_ans_j
+        self.jacobi[num] = cov.T
+
+    def __numpy_find_max_cov(self, num):
+        cov = self.jacobi[num]
+        cov = np.triu(cov, k=1).__abs__()
+        index = cov.argmax()
+        row = math.floor(index / FEATURE)
+        column = index - row * FEATURE
+        return row, column
+
 
 if __name__ == '__main__':
-    paths = list(map(lambda x: '../char/' + x, ['c' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
-    char = CharDatas(multi_load(paths))
-    covs = char.get_covariance()
-    write_covariance(covs)
+    datas_paths = list(map(lambda x: '../char/' + x, ['c' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
+    covs_paths = list(map(lambda x: '../sigma/' + x, ['sigma' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
+    char = CharDatas(multi_load(datas_paths), load_convariance(covs_paths))
+#    char.test_jacobi()
+#    for i in char.covs[0]:
+#        print([j if j > 0.1 else 0 for j in i])
+#    print(char.find_max_cov(0))
+#    print(char.numpy_find_max_cov(0))
+#    char.covs = np.array(char.covs)
+    np.set_printoptions(precision=1, threshold=100000, suppress=True)
+    with open('test_numpy.txt', 'w') as f:
+        f.write(char.eigs[0].__str__())
+#    print(char.eigs[0].__str__())
+#    print(char.eigs.__len__())
+#    print(char.eigs[0].__len__())
+#    print(char.eigs[0][0].__len__())
+#    print(char.eigs[0][0][0].__len__())

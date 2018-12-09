@@ -54,13 +54,13 @@ int main(){
 
 	inputData(xn, filename, N);
     start = clock();
-	dft(xn, N, Xk, 1, 1);
+//	dft(xn, N, Xk, 1, 1);
     end = clock();
-	printf("dft time = %lf[s]\n", (double)(end - start)/CLOCKS_PER_SEC);
-	outputAsAmp(Xk, "Xk.txt", N);
+//	printf("dft time = %lf[s]\n", (double)(end - start)/CLOCKS_PER_SEC);
+//	outputAsAmp(Xk, "Xk.txt", N);
     start = clock();
 	twid(wnk, N);
-	fft(xn, wnk, N, 7);
+	fft(xn, wnk, N, 14);
     end = clock();
 	printf("fft time = %lf[s]\n", (double)(end - start)/CLOCKS_PER_SEC);
 	outputAsAmp(xn, "xn.txt", N);
