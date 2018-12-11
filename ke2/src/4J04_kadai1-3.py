@@ -1,9 +1,7 @@
-# kadai1-2 s15023 å²©å´Žæ‚ ç´€
-import os, sys
+# kadai1-3 s15023 Šâè—I‹I
 import math
 import numpy as np
 import time
-from numba import jit
 
 FEATURE = 196
 CHARACTER = 180
@@ -76,7 +74,6 @@ def write_vector(vecs, paths):
                 f.write('\n')
 
 
-
 class CharDatas(object):
     def __init__(self, datas, covs):
         self.datas = datas
@@ -113,16 +110,16 @@ class CharDatas(object):
 
     def get_eig_jacobi(self):
         start = time.time()
-        for num in range(FEATURE):
+        for num in range(2):
             for i in range(80000):
                 row, col = self.__numpy_find_max_cov(num)
                 self.__numpy_sub_jacobi(num, row, col)
             self.eigs = self.eigs.tolist()
             self.eigs.append(np.diag(self.jacobi[num]))
             self.eigs = np.array(self.eigs)
-            self.__sort_vecs()
-            self.__sort_eigs()
             print('char numbers =', num)
+        self.__sort_vecs()
+        self.__sort_eigs()
         end = time.time()
         print('jacobi time =', end-start)
 
@@ -193,8 +190,7 @@ class CharDatas(object):
     def __sort_eigs(self):
         self.eigs = self.eigs.tolist()
         for eig in self.eigs:
-            eig.sort()
-            eig.reverse()
+            eig.sort(reverse=True)
         self.eigs = np.array(self.eigs)
 
 
@@ -205,17 +201,6 @@ if __name__ == '__main__':
     vecs_paths = list(map(lambda x: '../vec/' + x, ['vec' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
     char = CharDatas(multi_load(datas_paths), load_convariance(covs_paths))
     char.get_eig_jacobi()
-#    char.test_jacobi()
-#    for i in char.covs[0]:
-#        print([j if j > 0.1 else 0 for j in i])
-#    print(char.find_max_cov(0))
-#    print(char.numpy_find_max_cov(0))
-#    char.covs = np.array(char.covs)
     np.set_printoptions(precision=1, threshold=100000, suppress=True)
     write_eigenvalue(char.eigs, eigs_paths)
     write_vector(char.vecs, vecs_paths)
-#    print(char.eigs[0].__str__())
-#    print(char.eigs.__len__())
-#    print(char.eigs[0].__len__())
-#    print(char.eigs[0][0].__len__())
-#    print(char.eigs[0][0][0].__len__())
