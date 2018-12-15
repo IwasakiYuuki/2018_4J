@@ -134,10 +134,10 @@ def load_vectors(paths):
 
 
 def fill_b(x):
-    if abs(x) > 2000:
+    if abs(x) > 2500:
         return float(1/x)
     else:
-        return float(1/2000)
+        return float(1/2500)
 
 
 def get_rate(l):
@@ -151,6 +151,20 @@ def get_rate(l):
 
 
 def get_mean(datas):
+    '''
+    与えられたデータから平均を求める。
+
+    Parameters
+    ----------
+    datas: list
+        元データ
+
+    Returns
+    -------
+    means: list
+        datasの平均値のリスト
+
+    '''
     means = []
     for data in datas:
         buf = []
@@ -163,6 +177,23 @@ def get_mean(datas):
 
 
 def get_covariance(datas, means):
+    '''
+    与えられたデータと，その平均を用いて共分散行列を返す。
+    共分散行列は，元データの文字数分あり，文字数一つにつき，元データの特徴量分の実対称行列となる。
+
+    Parameters
+    ----------
+    datas: list
+        元のデータのリスト
+    means: list
+        datasの平均のリスト
+
+    Returns
+    -------
+    covs: list
+        共分散行列のリスト
+
+    '''
     covs = []
     for num, data in enumerate(datas):
         rev_data = list(zip(*data))
@@ -179,6 +210,7 @@ def get_covariance(datas, means):
 def get_eig_by_jacobi(covs):
     """
     ヤコビ法を用いて，共分散行列covsの固有値と固有ベクトルを求め，ファイル出力する。
+    二回目のfor文でヤコビ法実行の回数を指定する。
 
     Parameters
     ----------
@@ -211,6 +243,7 @@ def get_eig_by_jacobi(covs):
 def sub_jacobi(covs, vecs, num, i, j):
     """
     Numpyを用いて，共分散行列covsの指定されたインデックスにヤコビ法を適用する。
+    P^-1*A*Pの式を一回実行する。
 
     Parameters
     ----------
@@ -374,7 +407,7 @@ class LearningDatas(object):
         covsの固有ベクトル行列のリスト
 
     """
-    def __init__(self, datas=[], means=[], covs=[], x=[], eigs=[], vecs=[]):
+    def __init__(self, datas=[], means=[], covs=[], eigs=[], vecs=[]):
         self.datas = datas
         self.means = np.array(means)
         self.covs = np.array(covs)
@@ -384,7 +417,7 @@ class LearningDatas(object):
 
 class Recognition(LearningDatas):
     """
-    LearningDatasクラスの学習データを元に未知のデータを認識する。
+    LearningDatasクラスの学習データを元に未知のデータを識別する。
 
     Attributes
     ----------
@@ -408,8 +441,8 @@ class Recognition(LearningDatas):
         """
         ans = []
         dis = self.get_maharanobis()
-        ans = get_rate(np.array(dis).argmin(axis=0))
-        print(ans[11].__str__())
+        ans = np.array(dis).argmin(axis=0)
+        print(get_rate(ans.reshape(46, 20)).__str__())
         return ans
 
     def get_maharanobis(self):
@@ -430,10 +463,11 @@ class Recognition(LearningDatas):
             data = np.array(list(self.x))
             for line in data:
                 line -= m
-            data = np.dot(data, v.T)
+            v = np.delete(v.T, slice(180, 196), 1)
+            data = np.dot(data, v)
             data = pow_func(data)
             e = fill_func(e)
-            data = np.dot(data, e.T)
+            data = np.dot(data, e.T[:180])
             data = data.ravel().tolist()
             dis.append(data)
         return dis
@@ -446,11 +480,16 @@ if __name__ == '__main__':
     eigs_paths = list(map(lambda x: '../eig/' + x, ['eig' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
     vecs_paths = list(map(lambda x: '../vec/' + x, ['vec' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
     means_paths = list(map(lambda x: '../mean/' + x, ['mean' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
-    char = Recognition(eigs=load_eigenvalues(eigs_paths), vecs=load_vectors(vecs_paths),
-                       means=load_mean(means_paths), x=multi_load_x(datas_paths))
+    eigs = np.array(load_eigenvalues(eigs_paths))
+    vecs = np.array(load_vectors(vecs_paths))
+    means = np.array(load_mean(means_paths))
+    x = np.array(multi_load_x(datas_paths))
+    char = Recognition(eigs=eigs, vecs=vecs, means=means, x=x)
     char.get_recognition_by_maharanobis()
-    eig = np.array(load_eigenvalues(eigs_paths))
-    eig = eig.reshape(46, 196)
-    print(eig.shape)
-    print(eig.mean(axis=1).shape)
-    print(eig.mean(axis=1).__str__())
+#    eig = np.array(load_eigenvalues(eigs_paths))
+#    eig = eig.reshape(46, 196)
+#    mean = np.array(load_mean(means_paths))
+#    mean = mean.reshape(46, 196)
+#    print(eig.shape)
+#    for j, i in enumerate(mean.mean(axis=1)):
+#        print(j, i)
