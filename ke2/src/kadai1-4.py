@@ -142,11 +142,11 @@ def fill_b(x):
 
 def get_rate(l):
     l = l.reshape(46, 20).tolist()
-    ans =[]
+    ans = []
     for i, line in enumerate(l):
         ans.append(float(line.count(i)/20)*100)
     ans = np.array(ans).ravel()
-    print(ans.mean())
+    print('average recognition rate =', ans.mean(), '%')
     return ans
 
 
@@ -486,10 +486,3 @@ if __name__ == '__main__':
     x = np.array(multi_load_x(datas_paths))
     char = Recognition(eigs=eigs, vecs=vecs, means=means, x=x)
     char.get_recognition_by_maharanobis()
-#    eig = np.array(load_eigenvalues(eigs_paths))
-#    eig = eig.reshape(46, 196)
-#    mean = np.array(load_mean(means_paths))
-#    mean = mean.reshape(46, 196)
-#    print(eig.shape)
-#    for j, i in enumerate(mean.mean(axis=1)):
-#        print(j, i)
