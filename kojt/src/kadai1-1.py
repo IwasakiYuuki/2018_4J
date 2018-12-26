@@ -22,15 +22,23 @@ def create_bpsk(n, rate):
 
 def create_ask(cs, bs):
     ans = []
+    print(cs.__len__())
+    print(bs.__len__())
     for c, b in zip(cs, bs):
         ans.append([c[0], c[1]*b[1]])
     return ans
 
 
 if __name__=='__main__':
-    c = create_sin(1200, 1, 40000, -math.pi/2)
+    c = create_sin(1200, 1, 2000, -math.pi/2)
     b = create_bpsk(6, 200)
     datas = create_ask(c, b)
+    with open('../txt/kadai1-1.txt', 'w') as f:
+        for a in c:
+            f.write(str(a[0]) + '  ' + str(a[1])+'\n')
+    with open('../txt/kadai1-2.txt', 'w') as f:
+        for a in b:
+            f.write(str(a[0]) + '  ' + str(a[1])+'\n')
     with open('../txt/kadai1-3.txt', 'w') as f:
         for data in datas:
             f.write(str(data[0]) + '  ' + str(data[1])+'\n')
