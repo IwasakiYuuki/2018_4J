@@ -49,7 +49,7 @@ if __name__ == '__main__':
     b = create_bpsk(6, 200)
     vask = create_ask(c, b)
     r = create_ask(vask, create_cos(1200, 1, 2000, -math.pi/2))
-    r = LPF(r, 1)
+    r = LPF(r, 0.5)
     with open('../txt/kadai1-1.txt', 'w') as f:
         for a in c:
             f.write(str(a[0]) + '  ' + str(a[1])+'\n')
@@ -59,6 +59,6 @@ if __name__ == '__main__':
     with open('../txt/kadai1-3.txt', 'w') as f:
         for data in vask:
             f.write(str(data[0]) + '  ' + str(data[1])+'\n')
-    with open('../txt/kadai1-4_1.txt', 'w') as f:
+    with open('../txt/kadai1-4_0.5.txt', 'w') as f:
         for data in r:
             f.write(str(data[0]) + '  ' + str(data[1])+'\n')
