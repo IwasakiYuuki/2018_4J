@@ -1,10 +1,11 @@
 //2018年度・課題５・出席番号４番
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
-#define NUM 11025
+#define NUM 110
 #define EPSILON 1e-5
 
 typedef struct{
@@ -21,7 +22,7 @@ void hamming(comp *x1, comp *x2, int N);
 
 comp xn[NUM];
 comp Xk[NUM];
-char *filename = "waon.txt";
+char *filename = "spec.txt";
 
 int main(){
 	
@@ -42,9 +43,9 @@ int main(){
 		chache[i].im = 0;
 	}
 
-	inputData(chache, filename, N);	
+	inputData(xn, filename, N);
 	printf("2\n");
-	hamming(chache, xn, N);
+//	hamming(chache, xn, N);
 	printf("3\n");
 //	xn[0].re = 3;
 //	xn[1].im = 3;
@@ -55,13 +56,13 @@ int main(){
 //	xn[6].re = 1;
 //	xn[7].re = sqrt(2);
 
-	dft(xn, N, Xk, 1, 1);
-	printf("4\n");
-	ampSpectrum(Xk, N, buf);
-	printf("5\n");
-	phaSpectrum(Xk, N, pha_buf);
-	printf("6\n");
-	dft(Xk, N, a, -1, N);
+//	dft(xn, N, Xk, 1, 1);
+//	printf("4\n");
+//	ampSpectrum(Xk, N, buf);
+//	printf("5\n");
+//	phaSpectrum(Xk, N, pha_buf);
+//	printf("6\n");
+	dft(xn, N, a, -1, N);
 	printf("7\n");
 
 //	for(i=0;i<N;i++){
@@ -75,27 +76,27 @@ int main(){
 //		printf("pha[%d]=%12lf\n", i, pha_buf[i]);
 //	}
 
-	outputData(xn, "xn", N);
+//	outputData(xn, "xn", N);
 	outputData(a, "a", N);
-	outputData(Xk, "Xk", N);
-	outputData(chache, "chache", N);
+//	outputData(Xk, "Xk", N);
+//	outputData(chache, "chache", N);
 	
-	fp = fopen("amp.txt", "w");
-	for(i = 0; i < N; i++){
-		if(fprintf(fp, "%lf\n", buf[i]) < 0 ){
-			printf("ERROR\n");
-			return 0;
-		}
-	}
-
-	fp = fopen("pha.txt", "w");
-
-	for(i = 0; i < N; i++){
-		if(fprintf(fp, "%lf\n", pha_buf[i]) < 0 ){
-			printf("ERROR\n");
-			return 0;
-		}
-	}
+//	fp = fopen("amp.txt", "w");
+//	for(i = 0; i < N; i++){
+//		if(fprintf(fp, "%lf\n", buf[i]) < 0 ){
+//			printf("ERROR\n");
+//			return 0;
+//		}
+//	}
+//
+//	fp = fopen("pha.txt", "w");
+//
+//	for(i = 0; i < N; i++){
+//		if(fprintf(fp, "%lf\n", pha_buf[i]) < 0 ){
+//			printf("ERROR\n");
+//			return 0;
+//		}
+//	}
 
 	printf("2018年度・課題５・出席番号４番\n");
 	printf("usage:内部の定数を変化させ実行するとDFTします。\n");
@@ -112,8 +113,8 @@ void inputData(comp *data, char *filename, int N){
 	if(fp == NULL)printf("aaa\n");
 	for(i=0;i<N;i++){
 		if(fscanf(fp, "%lf\n", &data[i].re)==EOF){
-			printf("[ERROR] cant read file to the end.");
-			return;
+			printf("[ERROR] cant read file to the end.\n");
+			exit(1);
 		}
 	}
 	printf("1\n");

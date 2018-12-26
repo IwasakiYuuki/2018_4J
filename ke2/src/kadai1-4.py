@@ -1,12 +1,19 @@
-# kadai1-4 s15023 Šâè—I‹I
+# kadai1-4 s15023 å²©å´æ‚ ç´€
 import math
 import numpy as np
 import time
+import pandas as pd
 
 FEATURE = 196
 CHARACTER = 180
 FILES = 47
 ALL_CHARACTER = 200
+
+
+def write_csv_files(datas, paths):
+    for path, data in zip(paths, datas):
+        buf = pd.DataFrame(data)
+        buf.to_csv(path, index=None, columns=None)
 
 
 def load_data(path):
@@ -152,17 +159,17 @@ def get_rate(l):
 
 def get_mean(datas):
     '''
-    —^‚¦‚ç‚ê‚½ƒf[ƒ^‚©‚ç•½‹Ï‚ğ‹‚ß‚éB
+    ä¸ãˆã‚‰ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‹ã‚‰å¹³å‡ã‚’æ±‚ã‚ã‚‹ã€‚
 
     Parameters
     ----------
     datas: list
-        Œ³ƒf[ƒ^
+        å…ƒãƒ‡ãƒ¼ã‚¿
 
     Returns
     -------
     means: list
-        datas‚Ì•½‹Ï’l‚ÌƒŠƒXƒg
+        datasã®å¹³å‡å€¤ã®ãƒªã‚¹ãƒˆ
 
     '''
     means = []
@@ -178,20 +185,20 @@ def get_mean(datas):
 
 def get_covariance(datas, means):
     '''
-    —^‚¦‚ç‚ê‚½ƒf[ƒ^‚ÆC‚»‚Ì•½‹Ï‚ğ—p‚¢‚Ä‹¤•ªUs—ñ‚ğ•Ô‚·B
-    ‹¤•ªUs—ñ‚ÍCŒ³ƒf[ƒ^‚Ì•¶š”•ª‚ ‚èC•¶š”ˆê‚Â‚É‚Â‚«CŒ³ƒf[ƒ^‚Ì“Á’¥—Ê•ª‚ÌÀ‘ÎÌs—ñ‚Æ‚È‚éB
+    ä¸ãˆã‚‰ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã¨ï¼Œãã®å¹³å‡ã‚’ç”¨ã„ã¦å…±åˆ†æ•£è¡Œåˆ—ã‚’è¿”ã™ã€‚
+    å…±åˆ†æ•£è¡Œåˆ—ã¯ï¼Œå…ƒãƒ‡ãƒ¼ã‚¿ã®æ–‡å­—æ•°åˆ†ã‚ã‚Šï¼Œæ–‡å­—æ•°ä¸€ã¤ã«ã¤ãï¼Œå…ƒãƒ‡ãƒ¼ã‚¿ã®ç‰¹å¾´é‡åˆ†ã®å®Ÿå¯¾ç§°è¡Œåˆ—ã¨ãªã‚‹ã€‚
 
     Parameters
     ----------
     datas: list
-        Œ³‚Ìƒf[ƒ^‚ÌƒŠƒXƒg
+        å…ƒã®ãƒ‡ãƒ¼ã‚¿ã®ãƒªã‚¹ãƒˆ
     means: list
-        datas‚Ì•½‹Ï‚ÌƒŠƒXƒg
+        datasã®å¹³å‡ã®ãƒªã‚¹ãƒˆ
 
     Returns
     -------
     covs: list
-        ‹¤•ªUs—ñ‚ÌƒŠƒXƒg
+        å…±åˆ†æ•£è¡Œåˆ—ã®ãƒªã‚¹ãƒˆ
 
     '''
     covs = []
@@ -209,13 +216,13 @@ def get_covariance(datas, means):
 
 def get_eig_by_jacobi(covs):
     """
-    ƒ„ƒRƒr–@‚ğ—p‚¢‚ÄC‹¤•ªUs—ñcovs‚ÌŒÅ—L’l‚ÆŒÅ—LƒxƒNƒgƒ‹‚ğ‹‚ßCƒtƒ@ƒCƒ‹o—Í‚·‚éB
-    “ñ‰ñ–Ú‚Ìfor•¶‚Åƒ„ƒRƒr–@Às‚Ì‰ñ”‚ğw’è‚·‚éB
+    ãƒ¤ã‚³ãƒ“æ³•ã‚’ç”¨ã„ã¦ï¼Œå…±åˆ†æ•£è¡Œåˆ—covsã®å›ºæœ‰å€¤ã¨å›ºæœ‰ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ï¼Œãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›ã™ã‚‹ã€‚
+    äºŒå›ç›®ã®foræ–‡ã§ãƒ¤ã‚³ãƒ“æ³•å®Ÿè¡Œã®å›æ•°ã‚’æŒ‡å®šã™ã‚‹ã€‚
 
     Parameters
     ----------
     covs: list
-        ‹¤•ªUs—ñ
+        å…±åˆ†æ•£è¡Œåˆ—
 
     """
     eigs_paths = list(map(lambda x: '../eig/' + x, ['eig' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
@@ -242,28 +249,28 @@ def get_eig_by_jacobi(covs):
 
 def sub_jacobi(covs, vecs, num, i, j):
     """
-    Numpy‚ğ—p‚¢‚ÄC‹¤•ªUs—ñcovs‚Ìw’è‚³‚ê‚½ƒCƒ“ƒfƒbƒNƒX‚Éƒ„ƒRƒr–@‚ğ“K—p‚·‚éB
-    P^-1*A*P‚Ì®‚ğˆê‰ñÀs‚·‚éB
+    Numpyã‚’ç”¨ã„ã¦ï¼Œå…±åˆ†æ•£è¡Œåˆ—covsã®æŒ‡å®šã•ã‚ŒãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«ãƒ¤ã‚³ãƒ“æ³•ã‚’é©ç”¨ã™ã‚‹ã€‚
+    P^-1*A*Pã®å¼ã‚’ä¸€å›å®Ÿè¡Œã™ã‚‹ã€‚
 
     Parameters
     ----------
     covs: numpy.ndarray
-        ƒ„ƒRƒrs—ñ
+        ãƒ¤ã‚³ãƒ“è¡Œåˆ—
     vecs: numpy.ndarray
-        ŒÅ—LƒxƒNƒgƒ‹
+        å›ºæœ‰ãƒ™ã‚¯ãƒˆãƒ«
     num: int
-        •¶š”Ô†
+        æ–‡å­—ç•ªå·
     i: int
-        s”
+        è¡Œæ•°
     j: int
-        —ñ”
+        åˆ—æ•°
 
     Returns
     -------
     covs: numpy.ndarray
-        ƒ„ƒRƒr–@‚ğ“K—p‚µ‚½‹¤•ªUs—ñ
+        ãƒ¤ã‚³ãƒ“æ³•ã‚’é©ç”¨ã—ãŸå…±åˆ†æ•£è¡Œåˆ—
     vecs: numpy.ndarray
-        ŒÅ—LƒxƒNƒgƒ‹
+        å›ºæœ‰ãƒ™ã‚¯ãƒˆãƒ«
 
     """
     cov = covs[num]
@@ -311,21 +318,21 @@ def sub_jacobi(covs, vecs, num, i, j):
 
 def find_max_cov(covs, num):
     """
-    —^‚¦‚ç‚ê‚½À‘ÎÌs—ñcovs‚Ì”ñ‘ÎŠp¬•ª‚ÌÅ‘å’l‚ÌƒCƒ“ƒfƒbƒNƒX‚ğ‹‚ß‚éB
+    ä¸ãˆã‚‰ã‚ŒãŸå®Ÿå¯¾ç§°è¡Œåˆ—covsã®éå¯¾è§’æˆåˆ†ã®æœ€å¤§å€¤ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æ±‚ã‚ã‚‹ã€‚
 
     Parameters
     ----------
     covs: numpy.ndarray
-        ‘ÎÛ‚ÌÀ‘ÎÌs—ñ
+        å¯¾è±¡ã®å®Ÿå¯¾ç§°è¡Œåˆ—
     num: int
-        À‘ÎÌs—ñ‚Ì”Ô†
+        å®Ÿå¯¾ç§°è¡Œåˆ—ã®ç•ªå·
 
     Returns
     -------
     row: int
-        Å‘å’l‚Ìs”
+        æœ€å¤§å€¤ã®è¡Œæ•°
     column: int
-        Å‘å’l‚Ì—ñ”
+        æœ€å¤§å€¤ã®åˆ—æ•°
 
     """
     cov = covs[num]
@@ -338,19 +345,19 @@ def find_max_cov(covs, num):
 
 def sort_vecs(eigs, vecs):
     """
-    s—ñvecs‚ğƒxƒNƒgƒ‹eigs‚ğŒ³‚É~‡‚Éƒ\[ƒg‚·‚éB
+    è¡Œåˆ—vecsã‚’ãƒ™ã‚¯ãƒˆãƒ«eigsã‚’å…ƒã«é™é †ã«ã‚½ãƒ¼ãƒˆã™ã‚‹ã€‚
 
     Parameters
     ----------
     eigs: numpy.ndarray
-        ŒÅ—L’ls—ñ
+        å›ºæœ‰å€¤è¡Œåˆ—
     vecs: numpy.ndarray
-        ŒÅ—LƒxƒNƒgƒ‹‚Ìs—ñ
+        å›ºæœ‰ãƒ™ã‚¯ãƒˆãƒ«ã®è¡Œåˆ—
 
     Returns
     -------
     vecs: numpy.ndarray
-        ~‡‚Ìƒ\[ƒg‚³‚ê‚½ŒÅ—LƒxƒNƒgƒ‹‚Ìs—ñ
+        é™é †ã®ã‚½ãƒ¼ãƒˆã•ã‚ŒãŸå›ºæœ‰ãƒ™ã‚¯ãƒˆãƒ«ã®è¡Œåˆ—
 
     """
     buf = []
@@ -369,17 +376,17 @@ def sort_vecs(eigs, vecs):
 
 def sort_eigs(eigs):
     """
-    —^‚¦‚ç‚ê‚½ŒÅ—L’l‚Ìs—ñeigs‚ğ~‡‚Éƒ\[ƒg‚·‚éB
+    ä¸ãˆã‚‰ã‚ŒãŸå›ºæœ‰å€¤ã®è¡Œåˆ—eigsã‚’é™é †ã«ã‚½ãƒ¼ãƒˆã™ã‚‹ã€‚
 
     Parameters
     ----------
     eigs: numpy.ndarray
-        ŒÅ—L’l‚Ìs—ñ
+        å›ºæœ‰å€¤ã®è¡Œåˆ—
 
     Returns
     -------
     eigs: numpy.ndarray
-        ~‡‚Éƒ\[ƒg‚³‚ê‚½ŒÅ—L’l‚Ìs—ñ
+        é™é †ã«ã‚½ãƒ¼ãƒˆã•ã‚ŒãŸå›ºæœ‰å€¤ã®è¡Œåˆ—
 
     """
     eigs = eigs.tolist()
@@ -391,20 +398,20 @@ def sort_eigs(eigs):
 
 class LearningDatas(object):
     """
-    ŠwKƒf[ƒ^‚ÌŠeî•ñ‚ğ•Û‚·‚éB
+    å­¦ç¿’ãƒ‡ãƒ¼ã‚¿ã®å„æƒ…å ±ã‚’ä¿æŒã™ã‚‹ã€‚
 
     Attributes
     ----------
     datas: list
-        ŠwK—p“Á’¥—Êƒf[ƒ^‚ÌƒŠƒXƒg
+        å­¦ç¿’ç”¨ç‰¹å¾´é‡ãƒ‡ãƒ¼ã‚¿ã®ãƒªã‚¹ãƒˆ
     means: numpy.ndarray
-        datas‚Ì•½‹Ï’l‚ÌƒŠƒXƒg
+        datasã®å¹³å‡å€¤ã®ãƒªã‚¹ãƒˆ
     covs: numpy.adarray
-        datas‚Ì‹¤•ªUs—ñ‚ÌƒŠƒXƒg
+        datasã®å…±åˆ†æ•£è¡Œåˆ—ã®ãƒªã‚¹ãƒˆ
     eigs: numpy.adarray
-        covs‚ÌŒÅ—L’ls—ñ‚ÌƒŠƒXƒg
+        covsã®å›ºæœ‰å€¤è¡Œåˆ—ã®ãƒªã‚¹ãƒˆ
     vecs: numpy.adarray
-        covs‚ÌŒÅ—LƒxƒNƒgƒ‹s—ñ‚ÌƒŠƒXƒg
+        covsã®å›ºæœ‰ãƒ™ã‚¯ãƒˆãƒ«è¡Œåˆ—ã®ãƒªã‚¹ãƒˆ
 
     """
     def __init__(self, datas=[], means=[], covs=[], eigs=[], vecs=[]):
@@ -417,12 +424,12 @@ class LearningDatas(object):
 
 class Recognition(LearningDatas):
     """
-    LearningDatasƒNƒ‰ƒX‚ÌŠwKƒf[ƒ^‚ğŒ³‚É–¢’m‚Ìƒf[ƒ^‚ğ¯•Ê‚·‚éB
+    LearningDatasã‚¯ãƒ©ã‚¹ã®å­¦ç¿’ãƒ‡ãƒ¼ã‚¿ã‚’å…ƒã«æœªçŸ¥ã®ãƒ‡ãƒ¼ã‚¿ã‚’è­˜åˆ¥ã™ã‚‹ã€‚
 
     Attributes
     ----------
     x: tuple
-        ”F¯—p‚Ì–¢’m‚Ì“Á’¥—Êƒf[ƒ^
+        èªè­˜ç”¨ã®æœªçŸ¥ã®ç‰¹å¾´é‡ãƒ‡ãƒ¼ã‚¿
 
     """
     def __init__(self, datas=[], means=[], covs=[], x=[], eigs=[], vecs=[]):
@@ -431,12 +438,12 @@ class Recognition(LearningDatas):
 
     def get_recognition_by_maharanobis(self):
         """
-        ƒ}ƒnƒ‰ƒmƒrƒX‹——£‚ğg‚¢C•¶š”F¯‚ğ‚·‚éB
+        ãƒãƒãƒ©ãƒãƒ“ã‚¹è·é›¢ã‚’ä½¿ã„ï¼Œæ–‡å­—èªè­˜ã‚’ã™ã‚‹ã€‚
 
         Returns
         -------
         ans: numpy.ndarray
-            ”F¯‚µ‚½•¶šƒ‰ƒxƒ‹‚Ìnumpy.ndarrayŒ^‚ÌƒŠƒXƒg
+            èªè­˜ã—ãŸæ–‡å­—ãƒ©ãƒ™ãƒ«ã®numpy.ndarrayå‹ã®ãƒªã‚¹ãƒˆ
 
         """
         ans = []
@@ -447,13 +454,13 @@ class Recognition(LearningDatas):
 
     def get_maharanobis(self):
         """
-        ƒCƒ“ƒXƒ^ƒ“ƒX•Ï”x‚ğ–¢’m‚Ìƒf[ƒ^‚Æ‚µCƒCƒ“ƒXƒ^ƒ“ƒX•Ï”eigs, vecs, means‚Ì
-        ŒÅ—L’lCŒÅ—LƒxƒNƒgƒ‹C•½‹Ï’l‚ğg—p‚µ‚Äƒ}ƒnƒ‰ƒmƒrƒX‹——£‚ğŒvZ‚·‚éB
+        ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å¤‰æ•°xã‚’æœªçŸ¥ã®ãƒ‡ãƒ¼ã‚¿ã¨ã—ï¼Œã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å¤‰æ•°eigs, vecs, meansã®
+        å›ºæœ‰å€¤ï¼Œå›ºæœ‰ãƒ™ã‚¯ãƒˆãƒ«ï¼Œå¹³å‡å€¤ã‚’ä½¿ç”¨ã—ã¦ãƒãƒãƒ©ãƒãƒ“ã‚¹è·é›¢ã‚’è¨ˆç®—ã™ã‚‹ã€‚
 
         Returns
         -------
         dis: numpy.ndarray
-            ‹‚ß‚½ƒ}ƒnƒ‰ƒmƒrƒX‹——£‚Ìnumpy.ndarrayŒ^‚ÌƒŠƒXƒg
+            æ±‚ã‚ãŸãƒãƒãƒ©ãƒãƒ“ã‚¹è·é›¢ã®numpy.ndarrayå‹ã®ãƒªã‚¹ãƒˆ
 
         """
         pow_func = np.vectorize(lambda x: x**2)
@@ -481,8 +488,10 @@ if __name__ == '__main__':
     vecs_paths = list(map(lambda x: '../vec/' + x, ['vec' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
     means_paths = list(map(lambda x: '../mean/' + x, ['mean' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
     eigs = np.array(load_eigenvalues(eigs_paths))
+    print(np.array(eigs).shape)
     vecs = np.array(load_vectors(vecs_paths))
     means = np.array(load_mean(means_paths))
+    write_csv_files(vecs[0], ['../csv/sigma/eig02.csv'])
     x = np.array(multi_load_x(datas_paths))
     char = Recognition(eigs=eigs, vecs=vecs, means=means, x=x)
     char.get_recognition_by_maharanobis()

@@ -4,6 +4,8 @@ public class NonlinearEquation{
 
     public static final double EPSILON = 0.001;
     public static final int MAXIMUM_IT = 100;
+    public static final double NEGATIVE_MAX = 0.0;
+    public static final double POSITIVE_MAX = 4.0;
 
     private double initialValue_;
     private double answer_;
@@ -36,12 +38,43 @@ public class NonlinearEquation{
         // 繰り返しで得られる反復解の途中経過を表示するようにすること
     }
 
+    private void _solveNLEByBisectionMethod(){
+        double value, pastValue, left, right, y;
+        int i;
+
+        value = 0.0;
+        pastValue = 0.0;
+        left = NEGATIVE_MAX;
+        right = POSITIVE_MAX;
+
+        for(i=0; i<MAXIMUM_IT; i++){
+            value = (right - left)/2.0 + left;
+            if((value + 2.0) == 0){
+                y = 1.0;
+            }else{
+                y = Math.sin(value+2.0)/(value+2.0);
+            }
+            if(y > 0){
+                left = value;
+            }else if(y < 0){
+                right = value;
+            }
+            System.out.printf("xMid = %f, f(xMid)=%f, xPastMid = %f\n", value, y, pastValue);
+            if(Math.abs(y) < EPSILON){
+                break;
+            }
+            pastValue = value;
+        }
+        this.answer_ = value;
+        this.iteration_ = i;
+    }
+
 
     public static void main(String[] args) {
         NonlinearEquation eqn = new NonlinearEquation(2.0);
 
             // 初期反復解を設定
-            eqn._solveNLEByLinearIteration();
+            eqn._solveNLEByBisectionMethod();
             if(eqn.iteration_ < MAXIMUM_IT){
                 System.out.println("x = "+eqn.answer_+" at iteration "+eqn.iteration_);
             }else{
