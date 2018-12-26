@@ -44,11 +44,11 @@ def LPF(r, LPFactor):
 
 
 if __name__ == '__main__':
-    c = create_sin(1200, 1, 2000, -math.pi/2)
+    c = create_cos(1200, 1, 2000, -math.pi/2)
     b = create_bpsk(6, 200)
     vask = create_ask(c, b)
     r = create_ask(vask, create_cos(1200, 1, 2000, -math.pi/2))
-    r = LPF(r, 0.5)
+    r = LPF(r, 0.9)
     with open('../txt/kadai1-1.txt', 'w') as f:
         for a in c:
             f.write(str(a[0]) + '  ' + str(a[1])+'\n')
