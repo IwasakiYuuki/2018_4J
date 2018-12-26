@@ -2,6 +2,7 @@ import math
 import random
 
 F_SAMP = 40000
+bpsk = [0, 0, 1, 0, 1, 1, 0]
 
 
 def create_sin(n, a, f, p):
@@ -21,7 +22,7 @@ def create_cos(n, a, f, p):
 def create_bpsk(n, rate):
     ans = []
     for i in range(n):
-        buf = random.randrange(2)
+        buf = bpsk[i]
         for r in range(rate):
             ans.append([(i*rate+r)/F_SAMP, buf])
     return ans
