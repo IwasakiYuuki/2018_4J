@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#define NUM 110
+#define NUM 1024
 #define EPSILON 1e-5
 
 typedef struct{
@@ -22,7 +22,7 @@ void hamming(comp *x1, comp *x2, int N);
 
 comp xn[NUM];
 comp Xk[NUM];
-char *filename = "spec.txt";
+char *filename = "txt/04岩崎_dsp1-9.txt";
 
 int main(){
 	
@@ -56,13 +56,13 @@ int main(){
 //	xn[6].re = 1;
 //	xn[7].re = sqrt(2);
 
-//	dft(xn, N, Xk, 1, 1);
+	dft(xn, N, Xk, 1, 1);
 //	printf("4\n");
-//	ampSpectrum(Xk, N, buf);
+	ampSpectrum(Xk, N, buf);
 //	printf("5\n");
 //	phaSpectrum(Xk, N, pha_buf);
 //	printf("6\n");
-	dft(xn, N, a, -1, N);
+//	dft(xn, N, a, -1, N);
 	printf("7\n");
 
 //	for(i=0;i<N;i++){
@@ -77,17 +77,17 @@ int main(){
 //	}
 
 //	outputData(xn, "xn", N);
-	outputData(a, "a", N);
+//	outputData(a, "txt/a", N);
 //	outputData(Xk, "Xk", N);
 //	outputData(chache, "chache", N);
 	
-//	fp = fopen("amp.txt", "w");
-//	for(i = 0; i < N; i++){
-//		if(fprintf(fp, "%lf\n", buf[i]) < 0 ){
-//			printf("ERROR\n");
-//			return 0;
-//		}
-//	}
+	fp = fopen("txt/amp.txt", "w");
+	for(i = 0; i < N; i++){
+		if(fprintf(fp, "%lf\n", buf[i]) < 0 ){
+			printf("ERROR\n");
+			return 0;
+		}
+	}
 //
 //	fp = fopen("pha.txt", "w");
 //
@@ -174,7 +174,7 @@ void ampSpectrum(comp *Xk, int N, double *spec){
 		if(spec[k] < EPSILON){
 			spec[k] = 0;
 		}else{
-			//spec[k] = 20 * log10(spec[k]);
+			spec[k] = 20 * log10(spec[k]);
 		}
 	}
 }

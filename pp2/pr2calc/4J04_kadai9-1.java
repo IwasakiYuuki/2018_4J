@@ -1,3 +1,4 @@
+//4J04Šâè—I‹I@‰Û‘è”Ô†‚X|‚P
 package pr2calc;
 
 public class NonlinearEquation{
@@ -11,17 +12,17 @@ public class NonlinearEquation{
     private double answer_;
     private int iteration_;
 
-    // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(æœ€ä½ä¸€ã¤ç”¨æ„ã›ã‚ˆï¼‰
+    // ƒRƒ“ƒXƒgƒ‰ƒNƒ^(Å’áˆê‚Â—pˆÓ‚¹‚æj
     public NonlinearEquation(double initialValue_){
             this.initialValue_ = initialValue_;
     }
 
     private void _solveNLEByLinearIteration(){
-        double value,      // x_k ã«å¯¾å¿œ
-               pastValue;  // x_{k-1} ã«å¯¾å¿œï¼ˆåˆå›ã®pastValue = x_0ã¨ã™ã‚‹ï¼‰
+        double value,      // x_k ‚É‘Î‰
+               pastValue;  // x_{k-1} ‚É‘Î‰i‰‰ñ‚ÌpastValue = x_0‚Æ‚·‚éj
         int i;
 
-        // åˆæœŸåå¾©è§£ã‚’valueã«è¨­å®šã—
+        // ‰Šú”½•œ‰ğ‚ğvalue‚Éİ’è‚µ
         value = this.initialValue_;
         for(i=0; i<MAXIMUM_IT; i++){
             pastValue = value;
@@ -33,9 +34,9 @@ public class NonlinearEquation{
         }
         this.answer_ = value;
         this.iteration_ = i;
-        // |value - pastValue| ãŒ EPSILON æœªæº€ã¨ãªã‚‹(è¿‘ä¼¼è§£ãŒè¦‹ã¤ã‹ã‚‹)ã€ã‚‚ã—ãã¯
-        // ç¹°ã‚Šè¿”ã—å›æ•°ãŒMAXIMUM_IT å›ã«åˆ°é”ã™ã‚‹ã¾ã§ç¹°ã‚Šè¿”ã—
-        // ç¹°ã‚Šè¿”ã—ã§å¾—ã‚‰ã‚Œã‚‹åå¾©è§£ã®é€”ä¸­çµŒéã‚’è¡¨ç¤ºã™ã‚‹ã‚ˆã†ã«ã™ã‚‹ã“ã¨
+        // |value - pastValue| ‚ª EPSILON –¢–‚Æ‚È‚é(‹ß—‰ğ‚ªŒ©‚Â‚©‚é)A‚à‚µ‚­‚Í
+        // ŒJ‚è•Ô‚µ‰ñ”‚ªMAXIMUM_IT ‰ñ‚É“’B‚·‚é‚Ü‚ÅŒJ‚è•Ô‚µ
+        // ŒJ‚è•Ô‚µ‚Å“¾‚ç‚ê‚é”½•œ‰ğ‚Ì“r’†Œo‰ß‚ğ•\¦‚·‚é‚æ‚¤‚É‚·‚é‚±‚Æ
     }
 
     private void _solveNLEByBisectionMethod(){
@@ -73,19 +74,19 @@ public class NonlinearEquation{
     public static void main(String[] args) {
         NonlinearEquation eqn = new NonlinearEquation(2.0);
 
-            // åˆæœŸåå¾©è§£ã‚’è¨­å®š
+            // ‰Šú”½•œ‰ğ‚ğİ’è
             eqn._solveNLEByBisectionMethod();
             if(eqn.iteration_ < MAXIMUM_IT){
                 System.out.println("x = "+eqn.answer_+" at iteration "+eqn.iteration_);
             }else{
-                System.out.println("è§£ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ");
+                System.out.println("‰ğ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
             }
-            // è¿‘ä¼¼è§£ãŒå¾—ã‚‰ã‚ŒãŸã‚‰è¿‘ä¼¼è§£ï¼†ä½•å›ç›®ã®ç¹°ã‚Šè¿”ã—ã§è§£ãŒå¾—ã‚‰ã‚ŒãŸã‹ã‚’è¡¨ç¤º
-            // å¾—ã‚‰ã‚Œãªã‘ã‚Œã°ã€è§£ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã“ã¨ã‚’è¡¨ç¤º
+            // ‹ß—‰ğ‚ª“¾‚ç‚ê‚½‚ç‹ß—‰ğ•‰½‰ñ–Ú‚ÌŒJ‚è•Ô‚µ‚Å‰ğ‚ª“¾‚ç‚ê‚½‚©‚ğ•\¦
+            // “¾‚ç‚ê‚È‚¯‚ê‚ÎA‰ğ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚±‚Æ‚ğ•\¦
     }
 }
 
-/*----------å®Ÿè¡Œçµæœ----------
+/*----------ÀsŒ‹‰Ê----------
  xMid = 2.000000, f(xMid)=-0.189201, xPastMid = 0.000000
  xMid = 1.000000, f(xMid)=0.047040, xPastMid = 2.000000
  xMid = 1.500000, f(xMid)=-0.100224, xPastMid = 1.000000
