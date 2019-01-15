@@ -1,3 +1,4 @@
+//4J04岩崎悠紀　課題番号１０−２
 package pr2calc;
 
 public class NonlinearEquation{
