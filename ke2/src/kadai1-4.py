@@ -449,7 +449,8 @@ class Recognition(LearningDatas):
         ans = []
         dis = self.get_maharanobis()
         ans = np.array(dis).argmin(axis=0)
-        print(get_rate(ans.reshape(46, 20)).__str__())
+        get_rate(ans.reshape(46, 20))
+        print(ans.reshape(46, 20).__str__())
         return ans
 
     def get_maharanobis(self):
@@ -488,7 +489,6 @@ if __name__ == '__main__':
     vecs_paths = list(map(lambda x: '../vec/' + x, ['vec' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
     means_paths = list(map(lambda x: '../mean/' + x, ['mean' + '{:02}'.format(i) + '.txt' for i in range(1, FILES)]))
     eigs = np.array(load_eigenvalues(eigs_paths))
-    print(np.array(eigs).shape)
     vecs = np.array(load_vectors(vecs_paths))
     means = np.array(load_mean(means_paths))
     write_csv_files(vecs[0], ['../csv/sigma/eig02.csv'])
