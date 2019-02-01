@@ -73,11 +73,42 @@ public class NonlinearEquation{
         this.iteration_ = i;
     }
 
+    private void _solveNLEByNewton(){
+        double value,      // x_k に対応
+               pastValue;  // x_{k-1} に対応（初回のpastValue = x_0とする）
+        int i;
+
+        // 初期反復解をvalueに設定し
+        value = this.initialValue_;
+        for(i=0; i<MAXIMUM_IT; i++){
+            pastValue = value;
+            value = value - (this._f_Newton(value)/this._f_dash(value));
+            System.out.println("xNext = "+value+", f(xNext) = "+this._f_Newton(value));
+            if(Math.abs(value-pastValue)<EPSILON){
+                break;
+            }
+        }
+        this.answer_ = value;
+        this.iteration_ = i;
+        // |value - pastValue| が EPSILON 未満となる(近似解が見つかる)、もしくは
+        // 繰り返し回数がMAXIMUM_IT 回に到達するまで繰り返し
+        // 繰り返しで得られる反復解の途中経過を表示するようにすること
+    }
+
+    private double _f_Newton(double x){
+        return (Math.pow(Math.E, x) - 2.97*x);
+    }
+
+    private double _f_dash(double x){
+        double delta = 0.000001;
+        return ((this._f_Newton(x+delta)-this._f_Newton(x))/delta);
+    }
+
     public static void main(String[] args) {
-        NonlinearEquation eqn = new NonlinearEquation(2.0);
+        NonlinearEquation eqn = new NonlinearEquation(1.19);
 
             // 初期反復解を設定
-            eqn._solveNLEByRegulaFalsi();
+            eqn._solveNLEByNewton();
             if(eqn.iteration_ < MAXIMUM_IT){
                 System.out.println("x = "+eqn.answer_+" at iteration "+eqn.iteration_);
             }else{
@@ -89,10 +120,11 @@ public class NonlinearEquation{
 }
 
 /*----------実行結果----------
-xNext = 1.507543, f(xNext)=-0.217212, xPastNext = 0.000000
-xNext = 0.268361, f(xNext)=-0.038683, xPastNext = 1.507543
-xNext = 0.147262, f(xNext)=-0.001801, xPastNext = 0.268361
-xNext = 0.141831, f(xNext)=-0.000076, xPastNext = 0.147262
-xNext = 0.141603, f(xNext)=-0.000003, xPastNext = 0.141831
-x = 0.14160262391110684 at iteration 4
+xNext = 1.9696662347697322, f(xNext) = 1.3183748479506825
+xNext = 1.6556393945015748, f(xNext) = 0.31917799297276694
+xNext = 1.5148108458628855, f(xNext) = 0.049572454187647885
+xNext = 1.483407312348921, f(xNext) = 0.0022196308575122004
+xNext = 1.4818636954657036, f(xNext) = 5.252216539908261E-6
+xNext = 1.4818600255194414, f(xNext) = 3.771560841414612E-11
+x = 1.4818600255194414 at iteration 5
 ----------------------------*/

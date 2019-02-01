@@ -8,6 +8,7 @@ FEATURE = 196
 CHARACTER = 180
 FILES = 47
 ALL_CHARACTER = 200
+A = 0.9
 
 
 def write_csv_files(datas, paths):
@@ -450,7 +451,7 @@ class Recognition(LearningDatas):
         dis = self.get_maharanobis()
         ans = np.array(dis).argmin(axis=0)
         get_rate(ans.reshape(46, 20))
-        print(ans.reshape(46, 20).__str__())
+        #print(ans.reshape(46, 20).__str__())
         return ans
 
     def get_maharanobis(self):
@@ -474,8 +475,8 @@ class Recognition(LearningDatas):
             v = np.delete(v.T, slice(180, 196), 1)
             data = np.dot(data, v)
             data = pow_func(data)
-            e = fill_func(e)
-            data = np.dot(data, e.T[:180])
+            e_r = fill_func(e)
+            data = np.dot(data, e_r.T[:180])
             data = data.ravel().tolist()
             dis.append(data)
         return dis
