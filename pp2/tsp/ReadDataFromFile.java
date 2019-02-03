@@ -42,15 +42,4 @@ public class ReadDataFromFile{
             }
         }
     }
-
-    public static void main(String[] args){
-        ReadDataFromFile rd = new ReadDataFromFile("tsp/data/table.dat");
-        int i, j;
-        for(i=0; i<30; i++){
-            for(j=0; j<10; j++){
-                System.out.print(String.valueOf(rd.datas[i][j])+" ");
-            }
-            System.out.println(" ");
-        }
-    }
 }
