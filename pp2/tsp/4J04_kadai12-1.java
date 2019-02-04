@@ -1,3 +1,4 @@
+//4J04Šâè—I‹I@‰Û‘è”Ô†‚P‚Q|‚P
 package tsp;
 
 import java.nio.file.Files;
@@ -102,10 +103,10 @@ public class GreedyEquation extends ReadDataFromFile {
 
     public static void main(String[] args){
         GreedyEquation ge = new GreedyEquation();
-        System.out.println("æœ€çŸ­çµŒè·¯ã®ã‚³ã‚¹ãƒˆï¼š"+String.valueOf(ge.minCostOfRoute));
+        System.out.println("Å’ZŒo˜H‚ÌƒRƒXƒgF"+String.valueOf(ge.minCostOfRoute));
     }
 }
 
-/*ã€€å®Ÿè¡Œçµæœ
-æœ€çŸ­çµŒè·¯ã®ã‚³ã‚¹ãƒˆï¼š240
+/*@ÀsŒ‹‰Ê
+Å’ZŒo˜H‚ÌƒRƒXƒgF240
 */
